@@ -26,9 +26,12 @@ async def main() -> None:
     )
 
     approval_middleware = ToolApprovalMiddleware(
+    #Agentを実行するのに実行を許可するか確認
         auto_approval_rules=[
+    #どのツールを用いてよいのかを指定
             SkillsProvider.read_only_tools_auto_approval_rule
         ],
+    #読み取り専用ツールを自動承認するルールをMiddlewareに引き渡す
     )
 
     # OpenAIを利用するエージェントを作成
@@ -45,6 +48,7 @@ async def main() -> None:
         context_providers=[skills_provider],
     #skill providerをAgentに渡す
          middleware=[approval_middleware],
+    #middlewareをAgentに引き渡す
     )
 # Agentの会話・ツール実行状態を保存するセッションを作る
     session = agent.create_session()
@@ -56,7 +60,7 @@ async def main() -> None:
     #処理中のメッセージを表示
 
     result = await agent.run(question,session=session)
-    #非同期処理の結果が返ってくるまで待機する
+    #非同期処理の結果が返ってくるまで待機する、作成したsessionを元にAgentを実行
 
 
     print("回答：")
