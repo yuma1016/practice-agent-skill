@@ -1,11 +1,16 @@
 import asyncio
+import subprocess
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
 from agent_framework import (
     Agent,
     AgentResponseUpdate,
+    FileSkill,
+    FileSkillScript,
     SkillsProvider,
+    ToolApprovalMiddleware,
 )
 from agent_framework.openai import OpenAIChatClient
 from agent_framework.orchestrations import (
@@ -21,123 +26,167 @@ BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
 
+def subprocess_script_runner(
+    skill: FileSkill,
+    script: FileSkillScript,
+    args: dict | list[str] | None = None,
+) -> str:
+    """Skill内のPythonスクリプトを別プロセスで実行する。"""
+
+    script_path = Path(script.full_path)
+
+    # uvが使用しているPythonでsearch.pyを実行
+    command = [
+        sys.executable,
+        str(script_path),
+    ]
+
+    if isinstance(args, dict):
+        # {"query": "...", "top_k": 5}
+        # ↓
+        # --query "..." --top-k 5
+        for key, value in args.items():
+            option_name = f"--{key.replace('_', '-')}"
+
+            if isinstance(value, bool):
+                if value:
+                    command.append(option_name)
+
+            elif isinstance(value, list):
+                for item in value:
+                    command.extend(
+                        [option_name, str(item)]
+                    )
+
+            elif value is not None:
+                command.extend(
+                    [option_name, str(value)]
+                )
+
+    elif isinstance(args, list):
+        # ["虫歯にならないためには？", "5"]
+        command.extend(str(value) for value in args)
+
+    completed_process = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=120,
+        cwd=str(script_path.parent),
+    )
+
+    if completed_process.returncode != 0:
+        raise RuntimeError(
+            "Skillスクリプトの実行に失敗しました。\n"
+            f"{completed_process.stderr}"
+        )
+
+    return completed_process.stdout.strip()
+
+
 def select_next_speaker(state: GroupChatState) -> str:
-    """
-    Group Chatで次に発言するAgentを決める。
+    """奇数ラウンドはResearcher、偶数ラウンドはWriterを選ぶ。"""
 
-    0回目：Researcher
-    1回目：Writer
-    """
+    # current_roundは0から始まるため、表示用には1を足す
+    round_number = state.current_round + 1
 
-    if state.current_round == 0:
+    if round_number % 2 == 1:
         return "Researcher"
 
     return "Writer"
 
 
-def writer_has_finished(conversation) -> bool:
-    """
-    Writerが1回発言したらGroup Chatを終了する。
-    """
+def reached_maximum_rounds(conversation) -> bool:
+    """ResearcherとWriterの発言が合計4回になったら終了する。"""
 
-    for message in conversation:
-        author_name = getattr(message, "author_name", None)
+    assistant_message_count = sum(
+        1
+        for message in conversation
+        if message.role == "assistant"
+    )
 
-        if author_name == "Writer":
-            return True
-
-    return False
+    return assistant_message_count >= 4
 
 
 async def main() -> None:
-    # skillsフォルダからファイルベースSkillを探す
+    # ファイルベースSkillを読み込む
     skills_provider = SkillsProvider.from_paths(
         skill_paths=BASE_DIR / "skills",
 
-        # 開発中はSKILL.mdやCSVの変更を毎回反映させる
-        disable_caching=True,
+        # references/カテゴリ/ファイルまで探索
+        search_depth=3,
 
-        # 自分で作成したローカルSkillの読み取りを許可する
-        disable_load_skill_approval=True,
-        disable_read_skill_resource_approval=True,
+        # Pythonスクリプトの実行関数を登録
+        script_runner=subprocess_script_runner,
+
+        # 開発中はファイル変更を毎回反映
+        disable_caching=True,
     )
 
-    # OpenAIのAPIを使用するクライアント
-    client = OpenAIChatClient()
-
-    # SkillとCSVを使用して情報を調査するAgent
-    researcher = Agent(
-        client=client,
-        name="Researcher",
-        description=(
-            "虫歯予防のSkillとCSVを使用して、"
-            "質問に関係する情報を調査する担当です。"
-        ),
-        instructions=(
-            "あなたは虫歯予防について調査するResearcherです。"
-            "質問に関係するSkillを必ず読み込んでください。"
-            "Skillに参照ファイルが指定されている場合は、"
-            "read_skill_resourceを使ってCSVを読み込んでください。"
-            "CSVに書かれている情報を根拠として、"
-            "Writer向けの調査結果を日本語で作成してください。"
-            "使用したrecord_idも必ず明記してください。"
-            "この段階では文章をきれいにまとめることより、"
-            "根拠を正確に伝えることを優先してください。"
-        ),
-        context_providers=[
-            skills_provider,
+    # search.pyは自分で作った信頼できるスクリプトなので、
+    # run_skill_scriptを含むSkillツールを自動承認する
+    approval_middleware = ToolApprovalMiddleware(
+        auto_approval_rules=[
+            SkillsProvider.all_tools_auto_approval_rule
         ],
     )
 
-    # Researcherの結果を読みやすい文章にするAgent
+    # OpenAIクライアント
+    client = OpenAIChatClient()
+
+    # 資料検索と検証を担当
+    researcher = Agent(
+        client=client,
+        name="Researcher",
+        description="LlamaIndexで歯科資料を検索し、根拠を整理します。",
+        instructions=(
+            "あなたは歯科資料の調査担当です。"
+            "虫歯に関する質問ではdental-care Skillを読み込んでください。"
+            "必ずscripts/search.pyをrun_skill_scriptで実行してください。"
+            "検索時のqueryにはユーザーの質問を渡し、top_kは5にしてください。"
+            "最初の発言では、検索結果を整理してください。"
+            "Writerがすでに回答している場合は、検索結果とWriterの回答を比較し、"
+            "誤り、不足、資料にない断定がないかを確認してください。"
+            "使用したsourceを必ず示してください。"
+        ),
+        context_providers=[skills_provider],
+        middleware=[approval_middleware],
+    )
+
+    # Researcherの内容を文章化
     writer = Agent(
         client=client,
         name="Writer",
-        description=(
-            "Researcherの調査結果を、"
-            "ユーザー向けの読みやすい日本語にまとめる担当です。"
-        ),
+        description="Researcherの調査結果から日本語の回答を作成します。",
         instructions=(
-    "あなたは一般の利用者向けに文章を作成するWriterです。"
-    "会話履歴にあるResearcherの調査メモを使用して、"
-    "ユーザーへの最終回答を日本語で作成してください。"
-
-    "Researcherが提示していない医学情報を追加しないでください。"
-    "Researcherの調査メモをそのままコピーするのではなく、"
-    "複数の情報を整理して自然な文章にしてください。"
-
-    "最終回答は必ず次の構成にしてください。"
-
-    "1. 最初に質問への結論を1〜2文で書く"
-    "2. 実践することを箇条書きで示す"
-    "3. 注意事項を短く説明する"
-    "4. 最後に使用したrecord_idをまとめる"
-
-    "最後は必ず次の形式にしてください。"
-    "参照データ：C001, C002"
-)
+            "あなたは回答作成担当です。"
+            "Researcherが提示した検索結果だけを根拠として回答してください。"
+            "最初の発言では回答案を作成してください。"
+            "Researcherによる確認結果がすでにある場合は、"
+            "その指摘を反映した最終回答を作成してください。"
+            "資料に書かれていない内容を追加しないでください。"
+            "日本語で分かりやすく回答し、最後に使用資料を示してください。"
+        ),
     )
 
-    # Group Chatワークフローを作成する
+    # Group Chatを作成
     workflow = GroupChatBuilder(
         participants=[
             researcher,
             writer,
         ],
 
-        # Researcher→Writerの順番を決める
+        # Researcher、Writerの合計発言数が4回で終了
+        termination_condition=reached_maximum_rounds,
+
+        # 奇数Researcher、偶数Writer
         selection_func=select_next_speaker,
 
-        # Writerが発言したら終了する
-        termination_condition=writer_has_finished,
-
-        # Researcherの回答は途中経過として出力する
+        # 両方の発言をストリーミング出力する
         intermediate_output_from=[
             researcher,
-        ],
-
-        # Writerの回答を最終出力にする
-        output_from=[
             writer,
         ],
     ).build()
@@ -147,103 +196,67 @@ async def main() -> None:
     print(f"質問：{question}")
     print("Group Chatを実行しています...\n")
 
-    # ストリーミング中の文章を保存するリスト
-    researcher_parts = []
-    writer_parts = []
+    current_author: str | None = None
 
-    # ストリーミング完了後の文章
-    researcher_complete = ""
-    writer_complete = ""
+    # 最後のWriterの発言を保存する
+    latest_writer_chunks: list[str] = []
 
-    # Group Chatを実行する
-    async for event in workflow.run(question, stream=True):
+    stream = workflow.run(
+        question,
+        stream=True,
+    )
+
+    async for event in stream:
         if event.type not in ("intermediate", "output"):
             continue
 
         data = event.data
 
-        # Agentの回答が少しずつ返ってきた場合
-        if isinstance(data, AgentResponseUpdate):
-            text = data.text or ""
-            author_name = data.author_name
+        if not isinstance(data, AgentResponseUpdate):
+            continue
 
-            # author_nameが空の場合はイベントの種類から判断する
-            if author_name is None:
-                if event.type == "intermediate":
-                    author_name = "Researcher"
-                elif event.type == "output":
-                    author_name = "Writer"
+        author_name = data.author_name
 
-            if author_name == "Researcher":
-                researcher_parts.append(text)
+        # オーケストレーターの終了メッセージは表示しない
+        if author_name not in ("Researcher", "Writer"):
+            continue
 
-            elif author_name == "Writer":
-                writer_parts.append(text)
+        text_chunk = data.text or ""
 
-        # 完成したメッセージがリストで返ってきた場合
-        elif isinstance(data, (list, tuple)):
-            for message in data:
-                author_name = getattr(
-                    message,
-                    "author_name",
-                    None,
-                )
-                text = getattr(
-                    message,
-                    "text",
-                    "",
-                )
+        # 発言者が切り替わったときに見出しを表示
+        if author_name != current_author:
+            if current_author is not None:
+                print("\n")
 
-                if author_name == "Researcher" and text:
-                    researcher_complete = text
+            print(f"===== {author_name} =====")
 
-                elif author_name == "Writer" and text:
-                    writer_complete = text
+            # Writerの新しい発言が始まったら、
+            # 前回のWriter回答をリセットする
+            if author_name == "Writer":
+                latest_writer_chunks = []
 
-        # 完成したメッセージが1件だけ返ってきた場合
-        else:
-            author_name = getattr(
-                data,
-                "author_name",
-                None,
-            )
-            text = getattr(
-                data,
-                "text",
-                "",
-            )
+            current_author = author_name
 
-            if author_name == "Researcher" and text:
-                researcher_complete = text
+        print(
+            text_chunk,
+            end="",
+            flush=True,
+        )
 
-            elif author_name == "Writer" and text:
-                writer_complete = text
+        if author_name == "Writer":
+            latest_writer_chunks.append(text_chunk)
 
-    # 完成したメッセージがあればそれを優先する
-    researcher_text = (
-        researcher_complete
-        if researcher_complete
-        else "".join(researcher_parts)
+    # Workflowの終了処理を完了させる
+    await stream.get_final_response()
+
+    final_answer = "".join(
+        latest_writer_chunks
     ).strip()
 
-    writer_text = (
-        writer_complete
-        if writer_complete
-        else "".join(writer_parts)
-    ).strip()
+    print("\n\n===== 最終回答 =====")
 
-    # Researcherの調査結果を表示する
-    if researcher_text:
-        print("===== Researcherの調査結果 =====")
-        print(researcher_text)
-        print()
-    else:
-        print("Researcherの調査結果を取得できませんでした。\n")
-
-    # Writerの最終回答を表示する
-    if writer_text:
-        print("===== Writerの最終回答 =====")
-        print(writer_text)
+    if final_answer:
+        print(final_answer)
     else:
         print("Writerの最終回答を取得できませんでした。")
 
