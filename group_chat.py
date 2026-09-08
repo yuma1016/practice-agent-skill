@@ -7,10 +7,7 @@ from dotenv import load_dotenv
 from agent_framework import (
     Agent,
     AgentResponseUpdate,
-    FileSkill,
-    FileSkillScript,
-    SkillsProvider,
-    ToolApprovalMiddleware,
+    SkillsProvider,ToolApprovalMiddleware
 )
 from agent_framework.openai import OpenAIChatClient
 from agent_framework.orchestrations import (
@@ -25,65 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent
 # プロジェクト直下の.envを読み込む
 load_dotenv(BASE_DIR / ".env")
 
+def load_skill_instructions() -> str:
+    """SKILL.mdを読み込み、文字列として返す。"""
 
-def subprocess_script_runner(
-    skill: FileSkill,
-    script: FileSkillScript,
-    args: dict | list[str] | None = None,
-) -> str:
-    """Skill内のPythonスクリプトを別プロセスで実行する。"""
-
-    script_path = Path(script.full_path)
-
-    # uvが使用しているPythonでsearch.pyを実行
-    command = [
-        sys.executable,
-        str(script_path),
-    ]
-
-    if isinstance(args, dict):
-        # {"query": "...", "top_k": 5}
-        # ↓
-        # --query "..." --top-k 5
-        for key, value in args.items():
-            option_name = f"--{key.replace('_', '-')}"
-
-            if isinstance(value, bool):
-                if value:
-                    command.append(option_name)
-
-            elif isinstance(value, list):
-                for item in value:
-                    command.extend(
-                        [option_name, str(item)]
-                    )
-
-            elif value is not None:
-                command.extend(
-                    [option_name, str(value)]
-                )
-
-    elif isinstance(args, list):
-        # ["虫歯にならないためには？", "5"]
-        command.extend(str(value) for value in args)
-
-    completed_process = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=120,
-        cwd=str(script_path.parent),
+    skill_file = (
+        BASE_DIR
+        / "skills"
+        / "dental-care"
+        / "SKILL.md"
     )
-
-    if completed_process.returncode != 0:
-        raise RuntimeError(
-            "Skillスクリプトの実行に失敗しました。\n"
-            f"{completed_process.stderr}"
-        )
-
-    return completed_process.stdout.strip()
+    skill_instructions = skill_file.read_text(
+        encoding="utf-8"
+    ).strip()
+    return skill_instructions
 
 
 def select_next_speaker(state: GroupChatState) -> str:
@@ -166,47 +117,44 @@ def search_documents(
 
     return search_result
 async def main() -> None:
-    # ファイルベースSkillを読み込む
+    # OpenAIクライアント
     skills_provider = SkillsProvider.from_paths(
+    #フォルダからSKiLLを見つけ変数に格納
         skill_paths=BASE_DIR / "skills",
-
-        # references/カテゴリ/ファイルまで探索
-        search_depth=3,
-
-        # Pythonスクリプトの実行関数を登録
-        script_runner=subprocess_script_runner,
-
-        # 開発中はファイル変更を毎回反映
+    # 開発中はSKILL.mdやCSVの変更を毎回反映させる
         disable_caching=True,
     )
-
-    # search.pyは自分で作った信頼できるスクリプトなので、
-    # run_skill_scriptを含むSkillツールを自動承認する
     approval_middleware = ToolApprovalMiddleware(
+    #Agentを実行するのに実行を許可するか確認
         auto_approval_rules=[
-            SkillsProvider.all_tools_auto_approval_rule
+    #どのツールを用いてよいのかを指定
+            SkillsProvider.read_only_tools_auto_approval_rule
         ],
+    #読み取り専用ツールを自動承認するルールをMiddlewareに引き渡す
     )
-
-    # OpenAIクライアント
     client = OpenAIChatClient()
 
     # 資料検索と検証を担当
     researcher = Agent(
     client=client,
     name="Researcher",
-    description="検索済みの歯科資料を調査し、根拠を整理します。",
+    description="SKILL.mdと検索済みの歯科資料を調査し、根拠を整理します。",
     instructions=(
         "あなたは歯科資料の調査担当です。"
-        "ユーザーメッセージには、質問とLlamaIndexによる検索結果が含まれています。"
+        "ユーザーメッセージには、LlamaIndexによる検索結果が含まれています。"
         "検索結果のresultsにあるcontentだけを根拠にしてください。"
         "最初の発言から具体的な調査結果を提示してください。"
         "「これから調べます」「少々お待ちください」などとは回答しないでください。"
+        "質問に関連するSkillがある場合は、必ずそのSkillを読み込んでください。"
         "資料にない時間、回数、効果などを追加しないでください。"
         "根拠として使用したsourceを必ず列挙してください。"
         "Writerがすでに回答している場合は、その回答と検索結果を比較し、"
         "資料にない記述や誤りを指摘してください。"
     ),
+        context_providers=[skills_provider],
+    #skill providerをAgentに渡す
+         middleware=[approval_middleware],
+    #middlewareをAgentに引き渡す
 )
 
     # Researcherの内容を文章化
@@ -256,12 +204,14 @@ async def main() -> None:
         question=question,
         top_k=5,
     )
+    skill_instructions=load_skill_instructions()
 
     # 質問と検索結果をResearcherへ渡す
     task = (
         "以下の質問に、検索結果だけを根拠として回答してください。\n\n"
         f"【ユーザーの質問】\n{question}\n\n"
         f"【LlamaIndexによる検索結果】\n{search_result}\n\n"
+        f"【SKILL.md】\n{skill_instructions}\n\n"
         "【必須ルール】\n"
         "- Researcherは最初の発言から検索結果を整理する\n"
         "- 「これから調べます」とは回答しない\n"
