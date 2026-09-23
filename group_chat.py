@@ -1,5 +1,6 @@
 import asyncio
 from dataclasses import dataclass
+import os
 import re
 import subprocess
 #別のPythonファイルを別プロセスとして実行出来てるようにする
@@ -155,11 +156,29 @@ def find_floor_maps_in_researcher_output(
     researcher_output: str,
     floor_maps: list[FloorMap],
 ) -> list[FloorMap]:
-    """Researcherの出力に対応するフロア画像をSkill情報から探す。"""
+    """Researcherの出力から、最も関連性が高いフロア画像を探す。"""
 
     normalized_output = _normalize_for_match(researcher_output)
-    specific_matches: set[tuple[str, str]] = set()
+    image_path_matches: set[tuple[str, str]] = set()
+    room_number_matches: set[tuple[str, str]] = set()
+    building_floor_matches: set[tuple[str, str]] = set()
     mentioned_buildings: set[str] = set()
+    facility_aliases_by_floor: dict[tuple[str, str], set[str]] = {}
+    floors_by_facility_alias: dict[str, set[tuple[str, str]]] = {}
+
+    for floor_map in floor_maps:
+        key = (floor_map.building, floor_map.floor)
+        aliases = {
+            alias
+            for facility_name in floor_map.facility_names
+            for alias in _facility_aliases(facility_name)
+        }
+        facility_aliases_by_floor[key] = aliases
+
+        for alias in aliases:
+            floors_by_facility_alias.setdefault(alias, set()).add(key)
+
+    matched_facility_aliases: list[tuple[str, tuple[str, str]]] = []
 
     for floor_map in floor_maps:
         building = floor_map.building.casefold()
@@ -169,47 +188,79 @@ def find_floor_maps_in_researcher_output(
         if f"{building}棟" in normalized_output:
             mentioned_buildings.add(floor_map.building)
 
-        has_image_path = floor_map.image_path.name.casefold() in normalized_output
-        has_building_and_floor = any(
+        if floor_map.image_path.name.casefold() in normalized_output:
+            image_path_matches.add(key)
+
+        if any(
             marker in normalized_output
             for marker in (
                 f"{building}棟{floor}f",
                 f"{building}棟{floor}階",
             )
-        )
-        has_room_number = re.search(
+        ):
+            building_floor_matches.add(key)
+
+        if re.search(
             rf"(?<![a-z0-9]){re.escape(building)}{re.escape(floor)}\d{{2}}(?!\d)",
             normalized_output,
             flags=re.IGNORECASE,
-        ) is not None
-        has_facility_name = any(
-            alias in normalized_output
-            for facility_name in floor_map.facility_names
-            for alias in _facility_aliases(facility_name)
+        ) is not None:
+            room_number_matches.add(key)
+
+        matched_facility_aliases.extend(
+            (alias, key)
+            for alias in facility_aliases_by_floor[key]
+            if alias in normalized_output
         )
 
-        if (
-            has_image_path
-            or has_building_and_floor
-            or has_room_number
-            or has_facility_name
-        ):
-            specific_matches.add(key)
+    def maps_for(keys: set[tuple[str, str]]) -> list[FloorMap]:
+        return [
+            floor_map
+            for floor_map in floor_maps
+            if (floor_map.building, floor_map.floor) in keys
+        ]
+
+    # Researcherが明示した画像パスと部屋番号を最優先する。
+    if image_path_matches:
+        return maps_for(image_path_matches)
+
+    if room_number_matches:
+        return maps_for(room_number_matches)
+
+    # 「初診相談室」のように1フロアだけにある固有施設を優先する。
+    unique_facility_matches = {
+        key
+        for alias, key in matched_facility_aliases
+        if len(floors_by_facility_alias[alias]) == 1
+    }
+
+    if unique_facility_matches:
+        return maps_for(unique_facility_matches)
+
+    if building_floor_matches:
+        return maps_for(building_floor_matches)
+
+    # 「トイレ」のような共通設備しかない場合は、登場フロア数が最少の
+    # 施設名を優先し、無関係な画像が増えないようにする。
+    if matched_facility_aliases:
+        minimum_floor_count = min(
+            len(floors_by_facility_alias[alias])
+            for alias, _ in matched_facility_aliases
+        )
+        closest_facility_matches = {
+            key
+            for alias, key in matched_facility_aliases
+            if len(floors_by_facility_alias[alias]) == minimum_floor_count
+        }
+        return maps_for(closest_facility_matches)
 
     # 「A棟」のように階を特定できない場合は、その棟の全フロアを候補にする。
-    matched_buildings = {building for building, _ in specific_matches}
-    for building in mentioned_buildings - matched_buildings:
-        specific_matches.update(
-            (floor_map.building, floor_map.floor)
-            for floor_map in floor_maps
-            if floor_map.building == building
-        )
-
-    return [
-        floor_map
+    building_matches = {
+        (floor_map.building, floor_map.floor)
         for floor_map in floor_maps
-        if (floor_map.building, floor_map.floor) in specific_matches
-    ]
+        if floor_map.building in mentioned_buildings
+    }
+    return maps_for(building_matches)
 
 
 def format_floor_map_output(floor_maps: list[FloorMap]) -> str:
@@ -231,6 +282,21 @@ def format_floor_map_output(floor_maps: list[FloorMap]) -> str:
         )
 
     return "\n".join(output_lines)
+
+
+def show_floor_map_images(floor_maps: list[FloorMap]) -> None:
+    """該当するフロアマップをWindowsの標準画像ビューアーで開く。"""
+
+    if not hasattr(os, "startfile"):
+        print("この環境では画像ビューアーを自動で開けません。")
+        return
+
+    for floor_map in floor_maps:
+        try:
+            os.startfile(str(floor_map.image_path))
+        except OSError as error:
+            print(f"画像を開けませんでした: {floor_map.image_path}")
+            print(f"理由: {error}")
 
 def load_skill_instructions() -> str:
 #引数無しで実行するとSKILL.mdの内容を文字列で返す
@@ -310,6 +376,8 @@ def search_documents(
     #実行するコマンドをリストにする
         sys.executable,
     #現在プログラムを実行するPythonの場所
+        "-X",
+        "utf8",
         str(search_script),
     #実行対象である search.pyのパス
         "--query",
@@ -439,7 +507,7 @@ async def main() -> None:
         ],
     ).build()
 
-    question = "虫歯にならないためには？"
+    question = "初診相談はどこで出来る？"
 
     print(f"質問：{question}")
 
@@ -528,6 +596,7 @@ async def main() -> None:
 
     if matched_floor_maps:
         print(format_floor_map_output(matched_floor_maps))
+        show_floor_map_images(matched_floor_maps)
     elif final_answer:
         print(final_answer)
     else:
