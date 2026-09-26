@@ -13,8 +13,10 @@ from dotenv import load_dotenv
 from agent_framework import (
 #必要なクラスを読み込む
     Agent,
-#Resarcherやwriterを作る
+    AgentExecutor,
+# Researcherのストリーミング出力を扱う
     AgentResponseUpdate,
+    AgentSession,
 #ストリーミング中の回答データを表す
     SkillsProvider,ToolApprovalMiddleware
 #skillをフォルダを実行し、Skillのツール実行を承認
@@ -318,37 +320,28 @@ def load_skill_instructions() -> str:
 #SKILL.mdの内容を返り値にする
 
 
-def select_next_speaker(state: GroupChatState) -> str:
-#group chatの状態を受け取り、次に発言するAgent名を文字列で返す
-    """奇数ラウンドはResearcher、偶数ラウンドはWriterを選ぶ。"""
+def select_researcher(_state: GroupChatState) -> str:
+    """1ラウンドの発言者としてResearcherを選ぶ。"""
 
-    # current_roundは0から始まるため、表示用には1を足す
-    round_number = state.current_round + 1
-#現在のラウンド番号を取得
-
-    if round_number % 2 == 1:
-#ラウンド番号が奇数か確認
-        return "Researcher"
-
-    return "Writer"
+    return "Researcher"
 
 
-def reached_maximum_rounds(conversation) -> bool:
-    #会話履歴を受け取り、Group_chatを終了するか判断
-    """ResearcherとWriterの発言が合計4回になったら終了する。"""
+def build_researcher_workflow(researcher: Agent, session: AgentSession):
+    """会話セッションを引き継ぐ1ラウンドのWorkflowを作る。"""
 
-    assistant_message_count = sum(
-    #アシスタント役のメッセージ数を数える
-        1
-    #該当するメッセージ1件につき、数値の1を作る
-        for message in conversation
-    #conversation内のメッセージを1件ずつ、messageへ取り出す
-        if message.role == "assistant"
-    #メッセージの役割がassistantのものだけ対象にする。researcher、writerの発言はどちらもassistant
+    researcher_executor = AgentExecutor(
+        researcher,
+        session=session,
     )
 
-    return assistant_message_count >= 4
-#発言が4件以上ならTrueを返す
+    return GroupChatBuilder(
+        participants=[researcher_executor],
+        max_rounds=1,
+        selection_func=select_researcher,
+        intermediate_output_from=[researcher_executor],
+    ).build()
+
+
 def search_documents(
 #資料を検索する関数
     question: str,
@@ -452,7 +445,7 @@ async def main() -> None:
     instructions=(
         "あなたは歯科資料の調査担当です。"
         "ユーザーメッセージには、LlamaIndexによる検索結果が含まれています。"
-        "検索結果のresultsにあるcontentだけを根拠にしてください。"
+        "今回と過去の検索結果のresultsにあるcontentだけを根拠にしてください。"
         "最初の発言から具体的な調査結果を提示してください。"
         "「これから調べます」「少々お待ちください」などとは回答しないでください。"
         "質問に関連するSkillがある場合は、必ずそのSkillを読み込んでください。"
@@ -460,8 +453,6 @@ async def main() -> None:
         "根拠として使用したsourceを必ず列挙してください。"
         "施設名、部屋名、A棟、B棟、階数が回答に含まれる場合は、"
         "フロアマップ資料に記載された対応画像の相対パスも正確に列挙してください。"
-        "Writerがすでに回答している場合は、その回答と検索結果を比較し、"
-        "資料にない記述や誤りを指摘してください。"
     ),
         context_providers=[skills_provider],
     #skill providerをAgentに渡す
@@ -469,138 +460,98 @@ async def main() -> None:
     #middlewareをAgentに引き渡す
 )
 
-    # Researcherの内容を文章化
-    writer = Agent(
-    client=client,
-    name="Writer",
-    description="Researcherの調査結果から最終回答を作成します。",
-    instructions=(
-        "あなたは回答作成担当です。"
-        "Researcherが提示した検索結果と調査結果だけを根拠にしてください。"
-        "資料に書かれていない時間、頻度、数値、効果を追加しないでください。"
-        "根拠がない内容は削除してください。"
-        "最初の発言では回答案を作成してください。"
-        "Researcherによる確認結果がある場合は、指摘を反映して修正してください。"
-        "回答の最後に、実際のsourceファイル名を列挙してください。"
-        "『一般的なガイドライン』のような曖昧な出典名は使わないでください。"
-    ),
-)
-
-    # Group Chatを作成
-    workflow = GroupChatBuilder(
-        participants=[
-            researcher,
-            writer,
-        ],
-    
-
-        # Researcher、Writerの合計発言数が4回で終了
-        termination_condition=reached_maximum_rounds,
-
-        # 奇数Researcher、偶数Writer
-        selection_func=select_next_speaker,
-
-        # 両方の発言をストリーミング出力する
-        intermediate_output_from=[
-            researcher,
-            writer,
-        ],
-    ).build()
-
-    question = "初診相談はどこで出来る？"
-
-    print(f"質問：{question}")
-
-    # Group Chatを開始する前に資料を検索
-    search_result = search_documents(
-        question=question,
-        top_k=5,
-    )
-    skill_instructions=load_skill_instructions()
-
-    # 質問と検索結果をResearcherへ渡す
-    task = (
-        "以下の質問に、検索結果だけを根拠として回答してください。\n\n"
-        f"【ユーザーの質問】\n{question}\n\n"
-        f"【LlamaIndexによる検索結果】\n{search_result}\n\n"
-        f"【SKILL.md】\n{skill_instructions}\n\n"
-        "【必須ルール】\n"
-        "- Researcherは最初の発言から検索結果を整理する\n"
-        "- 「これから調べます」とは回答しない\n"
-        "- results内のcontentだけを根拠にする\n"
-        "- 資料にない数値、時間、頻度、効果を追加しない\n"
-        "- 使用したsourceを正確に記載する\n"
-        "- 施設名、部屋名、棟、階が含まれる場合は、資料にある画像の相対パスも記載する\n"
-    )
-
-    print("Group Chatを実行しています...\n")
-
-    current_author: str | None = None
-    researcher_chunks: list[str] = []
-    latest_writer_chunks: list[str] = []
-
-    stream = workflow.run(
-        task,
-        stream=True,
-    )
-
-    async for event in stream:
-        if event.type not in ("intermediate", "output"):
-            continue
-
-        data = event.data
-
-        if not isinstance(data, AgentResponseUpdate):
-            continue
-
-        author_name = data.author_name
-
-        if author_name not in ("Researcher", "Writer"):
-            continue
-
-        text_chunk = data.text or ""
-
-        if author_name != current_author:
-            if current_author is not None:
-                print("\n")
-
-            print(f"===== {author_name} =====")
-
-            if author_name == "Writer":
-                latest_writer_chunks = []
-
-            current_author = author_name
-
-        print(
-            text_chunk,
-            end="",
-            flush=True,
-        )
-
-        if author_name == "Writer":
-            latest_writer_chunks.append(text_chunk)
-        elif author_name == "Researcher":
-            researcher_chunks.append(text_chunk)
-
-    await stream.get_final_response()
-
-    researcher_output = "".join(researcher_chunks).strip()
-    final_answer = "".join(latest_writer_chunks).strip()
+    researcher_session = researcher.create_session()
+    skill_instructions = load_skill_instructions()
     floor_maps = load_floor_maps()
-    matched_floor_maps = find_floor_maps_in_researcher_output(
-        researcher_output=researcher_output,
-        floor_maps=floor_maps,
-    )
+    exit_commands = {"終了", "exit", "quit"}
 
-    print("\n\n===== 最終回答 =====")
+    print("歯科相談チャットを開始します。")
+    print("「終了」「exit」「quit」のいずれかを入力すると終了します。")
 
-    if matched_floor_maps:
-        print(format_floor_map_output(matched_floor_maps))
-        show_floor_map_images(matched_floor_maps)
-    elif final_answer:
-        print(final_answer)
-    else:
-        print("Writerの最終回答を取得できませんでした。")
+    while True:
+        try:
+            question = input("\nあなた: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nチャットを終了します。")
+            break
+
+        if not question:
+            continue
+
+        if question.casefold() in exit_commands:
+            print("チャットを終了します。")
+            break
+
+        try:
+            # 毎ターンの質問に対して資料を検索する
+            search_result = search_documents(
+                question=question,
+                top_k=5,
+            )
+
+            # 検索結果とルールをResearcherへ渡す
+            task = (
+                "以下の質問に、今回と過去の検索結果だけを根拠として回答してください。\n\n"
+                f"【ユーザーの質問】\n{question}\n\n"
+                f"【LlamaIndexによる今回の検索結果】\n{search_result}\n\n"
+                f"【SKILL.md】\n{skill_instructions}\n\n"
+                "【必須ルール】\n"
+                "- Researcherは最初の発言から検索結果を整理する\n"
+                "- 「これから調べます」とは回答しない\n"
+                "- 今回と過去のresults内のcontentだけを根拠にする\n"
+                "- 資料にない数値、時間、頻度、効果を追加しない\n"
+                "- 使用したsourceを正確に記載する\n"
+                "- 施設名、部屋名、棟、階が含まれる場合は、資料にある画像の相対パスも記載する\n"
+            )
+
+            # Workflowはラウンド状態をターンごとにリセットし、
+            # AgentSessionは共有して会話履歴を引き継ぐ。
+            workflow = build_researcher_workflow(
+                researcher,
+                researcher_session,
+            )
+            researcher_chunks: list[str] = []
+            print("Researcher: ", end="", flush=True)
+
+            stream = workflow.run(
+                task,
+                stream=True,
+            )
+
+            async for event in stream:
+                if event.type not in ("intermediate", "output"):
+                    continue
+
+                data = event.data
+
+                if not isinstance(data, AgentResponseUpdate):
+                    continue
+
+                if data.author_name != "Researcher":
+                    continue
+
+                text_chunk = data.text or ""
+                print(text_chunk, end="", flush=True)
+                researcher_chunks.append(text_chunk)
+
+            await stream.get_final_response()
+            researcher_output = "".join(researcher_chunks).strip()
+            print()
+
+            if not researcher_output:
+                print("Researcherの回答を取得できませんでした。")
+                continue
+
+            matched_floor_maps = find_floor_maps_in_researcher_output(
+                researcher_output=researcher_output,
+                floor_maps=floor_maps,
+            )
+
+            if matched_floor_maps:
+                print(format_floor_map_output(matched_floor_maps))
+                show_floor_map_images(matched_floor_maps)
+        except Exception as error:
+            print(f"回答の生成中にエラーが発生しました: {error}")
 
 if __name__ == "__main__":
     asyncio.run(main())
