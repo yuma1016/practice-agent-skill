@@ -32,6 +32,7 @@ from agent_framework.orchestrations import (
 
 # group_chat.pyが置かれているプロジェクトフォルダ
 BASE_DIR = Path(__file__).resolve().parent
+#.parentは現在のファイルが入っているフォルダを取得、その後絶対パスにする
 FLOOR_MAP_GUIDE = (
     BASE_DIR
     / "skills"
@@ -40,53 +41,75 @@ FLOOR_MAP_GUIDE = (
     / "aoba-dental-floor-maps"
     / "README.md"
 )
+#フロアマップについてのREADMEの場所を取得
 FLOOR_MAPS_DIR = FLOOR_MAP_GUIDE.parent / "maps"
-
+#フロアマップの場所についてのフォルダを取得
 # プロジェクト直下の.envを読み込む
 load_dotenv(BASE_DIR / ".env")
 
 
 @dataclass(frozen=True)
+#データを保存しやすいクラスとして指定(frozenは中身を変更できないように指定)
 class FloorMap:
     """スキルの参照資料から読み取った1フロア分の画像情報。"""
 
     building: str
+#フロアマップが何号棟か
     floor: str
+#フロアマップの何階か
     title: str
+#画像タイトル
     image_path: Path
+#フロアマップのパス
     facility_names: tuple[str, ...]
+#その階の施設名を取得
 
 
 def _normalize_for_match(text: str) -> str:
     """表記揺れを吸収するため、全角英数字と空白を正規化する。"""
 
     normalized = unicodedata.normalize("NFKC", text).casefold()
+#全て半角にし、大文字小文字の区別をなくす
     return re.sub(r"\s+", "", normalized)
+#1個以上の空白を削除し、正規化
 
 
 def _facility_aliases(facility_name: str) -> set[str]:
     """READMEの施設名から、照合に使える部屋名の候補を作る。"""
 
     aliases = {_normalize_for_match(facility_name)}
+#元の施設名を正規化し、set(集合のようなデータ構造)に入れる
 
     for part in re.split(r"[／/・、]", facility_name):
+#施設名を／/・、で分割する
         normalized_part = _normalize_for_match(part)
+#分割した文字列を検索しやすい形に正規化
 
         if len(normalized_part) >= 3:
+#正規化した文字列が3文字以上かを確認
             aliases.add(normalized_part)
+#3文字以上なら検索候補に追加
 
         # 「一般診療 A101〜A104」のような表記から「一般診療」も取り出す。
         name_without_room_number = re.sub(
+#施設名から部屋番号を削除
             r"[ab]\d{3}(?:[〜~-][ab]?\d{3})?",
             "",
+#削除対象を指定し、空文字列に置換([ab]\d{3}はA101等、)
             normalized_part,
+#削除対象の元の文字列
             flags=re.IGNORECASE,
+#大文字、小文字を区別しない
         ).strip()
+#前後の空白も削除
 
         if len(name_without_room_number) >= 3:
+#部屋番号削除後の名称が三文字か確認
             aliases.add(name_without_room_number)
+#検索候補に追加
 
     return aliases
+#作成した検索候補を返す
 
 
 def load_floor_maps() -> list[FloorMap]:
