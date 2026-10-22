@@ -7,6 +7,8 @@ dependencies = [
     "agent-framework-orchestrations>=1.1.1",
     "llama-index-core>=0.14.24",
     "llama-index-embeddings-openai>=0.7.0",
+    "pillow>=11,<13",
+    "pydantic>=2.10,<3",
     "python-dotenv>=1.2.3",
 ]
 

@@ -254,6 +254,8 @@ dependencies = [
     { name = "agent-framework-orchestrations" },
     { name = "llama-index-core" },
     { name = "llama-index-embeddings-openai" },
+    { name = "pillow" },
+    { name = "pydantic" },
     { name = "python-dotenv" },
 ]
 
@@ -263,6 +265,8 @@ requires-dist = [
     { name = "agent-framework-orchestrations", specifier = ">=1.1.1" },
     { name = "llama-index-core", specifier = ">=0.14.24" },
     { name = "llama-index-embeddings-openai", specifier = ">=0.7.0" },
+    { name = "pillow", specifier = ">=11,<13" },
+    { name = "pydantic", specifier = ">=2.10,<3" },
     { name = "python-dotenv", specifier = ">=1.2.3" },
 ]
 

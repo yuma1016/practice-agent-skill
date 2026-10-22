@@ -1,0 +1,1971 @@
+{
+  "metadata": {
+    "sample": true,
+    "source": "skills/dental-care/references/aoba-dental-floor-maps/README.md と既存PNG",
+    "warning": "施設・地図自体が架空のサンプルです。座標は画像に合わせた推定値、距離は未実測です。",
+    "distance_note": "距離はフロア図から作成した動作確認用の推定値です。実運用前に施設管理者が実測値へ置き換えてください。"
+  },
+  "canvas": {
+    "width": 1586,
+    "height": 992,
+    "north": "up"
+  },
+  "maps": {
+    "A-1": "../skills/dental-care/references/aoba-dental-floor-maps/maps/a-building-1f.png",
+    "A-2": "../skills/dental-care/references/aoba-dental-floor-maps/maps/a-building-2f.png",
+    "A-3": "../skills/dental-care/references/aoba-dental-floor-maps/maps/a-building-3f.png",
+    "B-1": "../skills/dental-care/references/aoba-dental-floor-maps/maps/b-building-1f.png",
+    "B-2": "../skills/dental-care/references/aoba-dental-floor-maps/maps/b-building-2f.png",
+    "B-3": "../skills/dental-care/references/aoba-dental-floor-maps/maps/b-building-3f.png"
+  },
+  "nodes": [
+    {
+      "id": "a1_hall_left",
+      "name": "A棟1階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 330,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_hall_center_left",
+      "name": "A棟1階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 700,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_hall_center_right",
+      "name": "A棟1階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 950,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_hall_right",
+      "name": "A棟1階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 1250,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_connector",
+      "name": "A棟1階 連絡通路",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 1510,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_stairs",
+      "name": "A棟1階 階段",
+      "aliases": [
+        "A棟1F階段",
+        "A棟1階階段"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 850,
+      "y": 520,
+      "description": ""
+    },
+    {
+      "id": "a1_elevator",
+      "name": "A棟1階 エレベーター",
+      "aliases": [
+        "A棟1Fエレベーター",
+        "A棟1階エレベーター"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 850,
+      "y": 650,
+      "description": ""
+    },
+    {
+      "id": "a2_hall_left",
+      "name": "A棟2階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "2",
+      "x": 330,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a2_hall_center_left",
+      "name": "A棟2階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "2",
+      "x": 700,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a2_hall_center_right",
+      "name": "A棟2階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "2",
+      "x": 950,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a2_hall_right",
+      "name": "A棟2階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "2",
+      "x": 1250,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a2_connector",
+      "name": "A棟2階 連絡通路",
+      "aliases": [],
+      "building": "A",
+      "floor": "2",
+      "x": 1510,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a2_stairs",
+      "name": "A棟2階 階段",
+      "aliases": [
+        "A棟2F階段",
+        "A棟2階階段"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 850,
+      "y": 520,
+      "description": ""
+    },
+    {
+      "id": "a2_elevator",
+      "name": "A棟2階 エレベーター",
+      "aliases": [
+        "A棟2Fエレベーター",
+        "A棟2階エレベーター"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 850,
+      "y": 650,
+      "description": ""
+    },
+    {
+      "id": "a3_hall_left",
+      "name": "A棟3階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "3",
+      "x": 330,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a3_hall_center_left",
+      "name": "A棟3階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "3",
+      "x": 700,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a3_hall_center_right",
+      "name": "A棟3階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "3",
+      "x": 950,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a3_hall_right",
+      "name": "A棟3階 主廊下",
+      "aliases": [],
+      "building": "A",
+      "floor": "3",
+      "x": 1250,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a3_connector",
+      "name": "A棟3階 連絡通路",
+      "aliases": [],
+      "building": "A",
+      "floor": "3",
+      "x": 1510,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a3_stairs",
+      "name": "A棟3階 階段",
+      "aliases": [
+        "A棟3F階段",
+        "A棟3階階段"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 850,
+      "y": 520,
+      "description": ""
+    },
+    {
+      "id": "a3_elevator",
+      "name": "A棟3階 エレベーター",
+      "aliases": [
+        "A棟3Fエレベーター",
+        "A棟3階エレベーター"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 850,
+      "y": 650,
+      "description": ""
+    },
+    {
+      "id": "b1_connector",
+      "name": "B棟1階 連絡通路",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 40,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_hall_left",
+      "name": "B棟1階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 330,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_hall_center_left",
+      "name": "B棟1階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 700,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_hall_center_right",
+      "name": "B棟1階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 950,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_hall_right",
+      "name": "B棟1階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 1300,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_stairs",
+      "name": "B棟1階 階段",
+      "aliases": [
+        "B棟1F階段",
+        "B棟1階階段"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 850,
+      "y": 520,
+      "description": ""
+    },
+    {
+      "id": "b1_elevator",
+      "name": "B棟1階 エレベーター",
+      "aliases": [
+        "B棟1Fエレベーター",
+        "B棟1階エレベーター"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 850,
+      "y": 650,
+      "description": ""
+    },
+    {
+      "id": "b2_connector",
+      "name": "B棟2階 連絡通路",
+      "aliases": [],
+      "building": "B",
+      "floor": "2",
+      "x": 40,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b2_hall_left",
+      "name": "B棟2階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "2",
+      "x": 330,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b2_hall_center_left",
+      "name": "B棟2階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "2",
+      "x": 700,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b2_hall_center_right",
+      "name": "B棟2階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "2",
+      "x": 950,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b2_hall_right",
+      "name": "B棟2階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "2",
+      "x": 1300,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b2_stairs",
+      "name": "B棟2階 階段",
+      "aliases": [
+        "B棟2F階段",
+        "B棟2階階段"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 850,
+      "y": 520,
+      "description": ""
+    },
+    {
+      "id": "b2_elevator",
+      "name": "B棟2階 エレベーター",
+      "aliases": [
+        "B棟2Fエレベーター",
+        "B棟2階エレベーター"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 850,
+      "y": 650,
+      "description": ""
+    },
+    {
+      "id": "b3_connector",
+      "name": "B棟3階 連絡通路",
+      "aliases": [],
+      "building": "B",
+      "floor": "3",
+      "x": 40,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b3_hall_left",
+      "name": "B棟3階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "3",
+      "x": 330,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b3_hall_center_left",
+      "name": "B棟3階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "3",
+      "x": 700,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b3_hall_center_right",
+      "name": "B棟3階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "3",
+      "x": 950,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b3_hall_right",
+      "name": "B棟3階 主廊下",
+      "aliases": [],
+      "building": "B",
+      "floor": "3",
+      "x": 1300,
+      "y": 420,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b3_stairs",
+      "name": "B棟3階 階段",
+      "aliases": [
+        "B棟3F階段",
+        "B棟3階階段"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 850,
+      "y": 520,
+      "description": ""
+    },
+    {
+      "id": "b3_elevator",
+      "name": "B棟3階 エレベーター",
+      "aliases": [
+        "B棟3Fエレベーター",
+        "B棟3階エレベーター"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 850,
+      "y": 650,
+      "description": ""
+    },
+    {
+      "id": "a1_entrance",
+      "name": "A棟1階 正面入口",
+      "aliases": [
+        "正面入口",
+        "正面玄関",
+        "現在地",
+        "A棟入口",
+        "A棟1F入口"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 850,
+      "y": 830,
+      "description": "一般来院者の入口"
+    },
+    {
+      "id": "a1_entry_left",
+      "name": "A棟1階 入口左側通路",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 720,
+      "y": 760,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_entry_right",
+      "name": "A棟1階 入口右側通路",
+      "aliases": [],
+      "building": "A",
+      "floor": "1",
+      "x": 980,
+      "y": 760,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "a1_reception",
+      "name": "A棟1階 総合受付・会計",
+      "aliases": [
+        "総合受付",
+        "総合受付・会計",
+        "会計",
+        "A棟1F受付"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 220,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a1_waiting",
+      "name": "A棟1階 待合ラウンジ",
+      "aliases": [
+        "待合ラウンジ",
+        "A棟1F待合"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 590,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a1_consult",
+      "name": "A棟1階 初診相談室",
+      "aliases": [
+        "初診相談室",
+        "初診相談",
+        "A棟1F初診相談室"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 1090,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a1_restroom",
+      "name": "A棟1階 トイレ",
+      "aliases": [
+        "A棟1Fトイレ",
+        "A棟1階トイレ",
+        "トイレ"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 1290,
+      "y": 610,
+      "description": ""
+    },
+    {
+      "id": "a1_a101",
+      "name": "A棟1階 一般診療 A101",
+      "aliases": [
+        "A101",
+        "一般診療A101",
+        "一般診療室A101"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 150,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a1_a102",
+      "name": "A棟1階 一般診療 A102",
+      "aliases": [
+        "A102",
+        "一般診療A102",
+        "一般診療室A102"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 400,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a1_a103",
+      "name": "A棟1階 一般診療 A103",
+      "aliases": [
+        "A103",
+        "一般診療A103",
+        "一般診療室A103"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 650,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a1_a104",
+      "name": "A棟1階 一般診療 A104",
+      "aliases": [
+        "A104",
+        "一般診療A104",
+        "一般診療室A104"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 900,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a1_panorama",
+      "name": "A棟1階 パノラマX線",
+      "aliases": [
+        "A棟1FパノラマX線",
+        "パノラマX線",
+        "パノラマ撮影"
+      ],
+      "building": "A",
+      "floor": "1",
+      "x": 1120,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a2_reception",
+      "name": "A棟2階 小児歯科受付",
+      "aliases": [
+        "小児歯科受付",
+        "小児受付",
+        "A棟2F受付"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 210,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a2_waiting",
+      "name": "A棟2階 小児待合",
+      "aliases": [
+        "小児待合",
+        "小児歯科待合"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 550,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a2_kids",
+      "name": "A棟2階 キッズスペース",
+      "aliases": [
+        "キッズスペース"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 980,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a2_training",
+      "name": "A棟2階 口腔筋機能訓練室",
+      "aliases": [
+        "口腔筋機能訓練室",
+        "MFT室",
+        "訓練室"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 1140,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a2_nursing",
+      "name": "A棟2階 授乳室",
+      "aliases": [
+        "授乳室"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 1340,
+      "y": 515,
+      "description": ""
+    },
+    {
+      "id": "a2_restroom",
+      "name": "A棟2階 トイレ",
+      "aliases": [
+        "A棟2Fトイレ",
+        "A棟2階トイレ",
+        "トイレ"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 1340,
+      "y": 680,
+      "description": ""
+    },
+    {
+      "id": "a2_a201",
+      "name": "A棟2階 小児歯科 A201",
+      "aliases": [
+        "A201",
+        "小児歯科A201",
+        "小児歯科室A201"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 150,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a2_a202",
+      "name": "A棟2階 小児歯科 A202",
+      "aliases": [
+        "A202",
+        "小児歯科A202",
+        "小児歯科室A202"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 400,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a2_a203",
+      "name": "A棟2階 小児歯科 A203",
+      "aliases": [
+        "A203",
+        "小児歯科A203",
+        "小児歯科室A203"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 650,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a2_a204",
+      "name": "A棟2階 矯正歯科 A204",
+      "aliases": [
+        "A204",
+        "矯正歯科A204",
+        "矯正歯科室A204"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 890,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a2_a205",
+      "name": "A棟2階 矯正歯科 A205",
+      "aliases": [
+        "A205",
+        "矯正歯科A205",
+        "矯正歯科室A205"
+      ],
+      "building": "A",
+      "floor": "2",
+      "x": 1110,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a3_reception",
+      "name": "A棟3階 予防ケア受付",
+      "aliases": [
+        "予防ケア受付",
+        "予防受付",
+        "A棟3F受付"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 220,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a3_waiting",
+      "name": "A棟3階 メンテナンス待合",
+      "aliases": [
+        "メンテナンス待合",
+        "予防ケア待合"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 590,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a3_classroom",
+      "name": "A棟3階 口腔ケア教室",
+      "aliases": [
+        "口腔ケア教室"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 1050,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a3_staff",
+      "name": "A棟3階 スタッフルーム",
+      "aliases": [
+        "A棟3Fスタッフルーム",
+        "スタッフルーム"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 1220,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "a3_restroom",
+      "name": "A棟3階 トイレ",
+      "aliases": [
+        "A棟3Fトイレ",
+        "A棟3階トイレ",
+        "トイレ"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 1370,
+      "y": 620,
+      "description": ""
+    },
+    {
+      "id": "a3_a301",
+      "name": "A棟3階 PMTC A301",
+      "aliases": [
+        "A301",
+        "PMTCA301",
+        "PMTC室A301"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 150,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a3_a302",
+      "name": "A棟3階 PMTC A302",
+      "aliases": [
+        "A302",
+        "PMTCA302",
+        "PMTC室A302"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 400,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a3_a303",
+      "name": "A棟3階 PMTC A303",
+      "aliases": [
+        "A303",
+        "PMTCA303",
+        "PMTC室A303"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 650,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a3_a304",
+      "name": "A棟3階 歯周病治療 A304",
+      "aliases": [
+        "A304",
+        "歯周病治療A304",
+        "歯周病治療室A304"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 890,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "a3_a305",
+      "name": "A棟3階 歯周病治療 A305",
+      "aliases": [
+        "A305",
+        "歯周病治療A305",
+        "歯周病治療室A305"
+      ],
+      "building": "A",
+      "floor": "3",
+      "x": 1110,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b1_entrance",
+      "name": "B棟1階 夜間入口",
+      "aliases": [
+        "夜間入口",
+        "B棟入口",
+        "B棟1F入口"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 820,
+      "y": 830,
+      "description": "夜間・急患利用者の入口"
+    },
+    {
+      "id": "b1_entry_left",
+      "name": "B棟1階 入口左側通路",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 700,
+      "y": 760,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_entry_right",
+      "name": "B棟1階 入口右側通路",
+      "aliases": [],
+      "building": "B",
+      "floor": "1",
+      "x": 940,
+      "y": 760,
+      "description": "経路計算用の接続点"
+    },
+    {
+      "id": "b1_reception",
+      "name": "B棟1階 救急受付",
+      "aliases": [
+        "救急受付",
+        "B棟1F受付"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 260,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b1_waiting",
+      "name": "B棟1階 急患待合",
+      "aliases": [
+        "急患待合",
+        "救急待合"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 580,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b1_sterilization",
+      "name": "B棟1階 消毒・滅菌室",
+      "aliases": [
+        "消毒・滅菌室",
+        "滅菌室",
+        "消毒室"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 1040,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b1_pharmacy",
+      "name": "B棟1階 院内薬局",
+      "aliases": [
+        "院内薬局",
+        "薬局"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 1230,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b1_restroom",
+      "name": "B棟1階 トイレ",
+      "aliases": [
+        "B棟1Fトイレ",
+        "B棟1階トイレ",
+        "トイレ"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 1460,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b1_b101",
+      "name": "B棟1階 急患診療 B101",
+      "aliases": [
+        "B101",
+        "急患診療B101",
+        "急患診療室B101"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 220,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b1_b102",
+      "name": "B棟1階 急患診療 B102",
+      "aliases": [
+        "B102",
+        "急患診療B102",
+        "急患診療室B102"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 450,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b1_b103",
+      "name": "B棟1階 急患診療 B103",
+      "aliases": [
+        "B103",
+        "急患診療B103",
+        "急患診療室B103"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 660,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b1_ct",
+      "name": "B棟1階 CT撮影室",
+      "aliases": [
+        "CT撮影室",
+        "CT室",
+        "歯科用CT"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 880,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b1_panorama",
+      "name": "B棟1階 パノラマX線",
+      "aliases": [
+        "B棟1FパノラマX線",
+        "パノラマX線",
+        "パノラマ撮影"
+      ],
+      "building": "B",
+      "floor": "1",
+      "x": 1140,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b2_reception",
+      "name": "B棟2階 口腔外科受付",
+      "aliases": [
+        "口腔外科受付",
+        "B棟2F受付"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 260,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b2_waiting",
+      "name": "B棟2階 口腔外科待合",
+      "aliases": [
+        "口腔外科待合"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 580,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b2_tmj",
+      "name": "B棟2階 顎関節外来",
+      "aliases": [
+        "顎関節外来",
+        "顎関節症外来"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 1040,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b2_treatment",
+      "name": "B棟2階 処置室",
+      "aliases": [
+        "B棟2F処置室",
+        "処置室"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 1230,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b2_restroom",
+      "name": "B棟2階 トイレ",
+      "aliases": [
+        "B棟2Fトイレ",
+        "B棟2階トイレ",
+        "トイレ"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 1460,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b2_b201",
+      "name": "B棟2階 口腔外科 B201",
+      "aliases": [
+        "B201",
+        "口腔外科B201",
+        "口腔外科室B201"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 220,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b2_b202",
+      "name": "B棟2階 口腔外科 B202",
+      "aliases": [
+        "B202",
+        "口腔外科B202",
+        "口腔外科室B202"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 450,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b2_b203",
+      "name": "B棟2階 口腔外科 B203",
+      "aliases": [
+        "B203",
+        "口腔外科B203",
+        "口腔外科室B203"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 660,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b2_or1",
+      "name": "B棟2階 手術室 1",
+      "aliases": [
+        "手術室1",
+        "オペ室1"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 850,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b2_or2",
+      "name": "B棟2階 手術室 2",
+      "aliases": [
+        "手術室2",
+        "オペ室2"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 1040,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b2_recovery",
+      "name": "B棟2階 回復室",
+      "aliases": [
+        "回復室"
+      ],
+      "building": "B",
+      "floor": "2",
+      "x": 1210,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b3_reception",
+      "name": "B棟3階 訪問歯科受付",
+      "aliases": [
+        "訪問歯科受付",
+        "B棟3F受付"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 260,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b3_lab",
+      "name": "B棟3階 歯科技工室",
+      "aliases": [
+        "歯科技工室",
+        "技工室"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 580,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b3_hall",
+      "name": "B棟3階 多目的ホール",
+      "aliases": [
+        "多目的ホール"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 1040,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b3_records",
+      "name": "B棟3階 資料室",
+      "aliases": [
+        "資料室"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 1210,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b3_restroom",
+      "name": "B棟3階 トイレ",
+      "aliases": [
+        "B棟3Fトイレ",
+        "B棟3階トイレ",
+        "トイレ"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 1460,
+      "y": 600,
+      "description": ""
+    },
+    {
+      "id": "b3_b301",
+      "name": "B棟3階 訪問歯科相談室 B301",
+      "aliases": [
+        "B301",
+        "訪問歯科相談室B301",
+        "訪問歯科B301"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 210,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b3_b302",
+      "name": "B棟3階 訪問歯科相談室 B302",
+      "aliases": [
+        "B302",
+        "訪問歯科相談室B302",
+        "訪問歯科B302"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 450,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b3_conference",
+      "name": "B棟3階 カンファレンス室",
+      "aliases": [
+        "カンファレンス室",
+        "会議室"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 660,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b3_training1",
+      "name": "B棟3階 研修室 1",
+      "aliases": [
+        "研修室1"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 880,
+      "y": 270,
+      "description": ""
+    },
+    {
+      "id": "b3_training2",
+      "name": "B棟3階 研修室 2",
+      "aliases": [
+        "研修室2"
+      ],
+      "building": "B",
+      "floor": "3",
+      "x": 1110,
+      "y": 270,
+      "description": ""
+    }
+  ],
+  "edges": [
+    {
+      "from": "a1_hall_left",
+      "to": "a1_hall_center_left",
+      "distance_m": 14.8
+    },
+    {
+      "from": "a1_hall_center_left",
+      "to": "a1_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "a1_hall_center_right",
+      "to": "a1_hall_right",
+      "distance_m": 12
+    },
+    {
+      "from": "a1_hall_right",
+      "to": "a1_connector",
+      "distance_m": 10.4
+    },
+    {
+      "from": "a1_hall_center_left",
+      "to": "a1_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "a1_hall_center_right",
+      "to": "a1_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "a1_stairs",
+      "to": "a1_elevator",
+      "distance_m": 5
+    },
+    {
+      "from": "a2_hall_left",
+      "to": "a2_hall_center_left",
+      "distance_m": 14.8
+    },
+    {
+      "from": "a2_hall_center_left",
+      "to": "a2_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "a2_hall_center_right",
+      "to": "a2_hall_right",
+      "distance_m": 12
+    },
+    {
+      "from": "a2_hall_right",
+      "to": "a2_connector",
+      "distance_m": 10.4
+    },
+    {
+      "from": "a2_hall_center_left",
+      "to": "a2_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "a2_hall_center_right",
+      "to": "a2_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "a2_stairs",
+      "to": "a2_elevator",
+      "distance_m": 5
+    },
+    {
+      "from": "a3_hall_left",
+      "to": "a3_hall_center_left",
+      "distance_m": 14.8
+    },
+    {
+      "from": "a3_hall_center_left",
+      "to": "a3_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "a3_hall_center_right",
+      "to": "a3_hall_right",
+      "distance_m": 12
+    },
+    {
+      "from": "a3_hall_right",
+      "to": "a3_connector",
+      "distance_m": 10.4
+    },
+    {
+      "from": "a3_hall_center_left",
+      "to": "a3_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "a3_hall_center_right",
+      "to": "a3_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "a3_stairs",
+      "to": "a3_elevator",
+      "distance_m": 5
+    },
+    {
+      "from": "b1_connector",
+      "to": "b1_hall_left",
+      "distance_m": 11.6
+    },
+    {
+      "from": "b1_hall_left",
+      "to": "b1_hall_center_left",
+      "distance_m": 14.8
+    },
+    {
+      "from": "b1_hall_center_left",
+      "to": "b1_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "b1_hall_center_right",
+      "to": "b1_hall_right",
+      "distance_m": 14
+    },
+    {
+      "from": "b1_hall_center_left",
+      "to": "b1_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "b1_hall_center_right",
+      "to": "b1_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "b1_stairs",
+      "to": "b1_elevator",
+      "distance_m": 5
+    },
+    {
+      "from": "b2_connector",
+      "to": "b2_hall_left",
+      "distance_m": 11.6
+    },
+    {
+      "from": "b2_hall_left",
+      "to": "b2_hall_center_left",
+      "distance_m": 14.8
+    },
+    {
+      "from": "b2_hall_center_left",
+      "to": "b2_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "b2_hall_center_right",
+      "to": "b2_hall_right",
+      "distance_m": 14
+    },
+    {
+      "from": "b2_hall_center_left",
+      "to": "b2_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "b2_hall_center_right",
+      "to": "b2_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "b2_stairs",
+      "to": "b2_elevator",
+      "distance_m": 5
+    },
+    {
+      "from": "b3_connector",
+      "to": "b3_hall_left",
+      "distance_m": 11.6
+    },
+    {
+      "from": "b3_hall_left",
+      "to": "b3_hall_center_left",
+      "distance_m": 14.8
+    },
+    {
+      "from": "b3_hall_center_left",
+      "to": "b3_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "b3_hall_center_right",
+      "to": "b3_hall_right",
+      "distance_m": 14
+    },
+    {
+      "from": "b3_hall_center_left",
+      "to": "b3_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "b3_hall_center_right",
+      "to": "b3_stairs",
+      "distance_m": 7
+    },
+    {
+      "from": "b3_stairs",
+      "to": "b3_elevator",
+      "distance_m": 5
+    },
+    {
+      "from": "a1_entrance",
+      "to": "a1_entry_left",
+      "distance_m": 5
+    },
+    {
+      "from": "a1_entrance",
+      "to": "a1_entry_right",
+      "distance_m": 5
+    },
+    {
+      "from": "a1_entry_left",
+      "to": "a1_hall_center_left",
+      "distance_m": 12
+    },
+    {
+      "from": "a1_entry_right",
+      "to": "a1_hall_center_right",
+      "distance_m": 12
+    },
+    {
+      "from": "a1_reception",
+      "to": "a1_hall_left",
+      "distance_m": 12
+    },
+    {
+      "from": "a1_waiting",
+      "to": "a1_hall_center_left",
+      "distance_m": 9
+    },
+    {
+      "from": "a1_consult",
+      "to": "a1_hall_center_right",
+      "distance_m": 10
+    },
+    {
+      "from": "a1_restroom",
+      "to": "a1_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "a1_a101",
+      "to": "a1_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a1_a102",
+      "to": "a1_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a1_a103",
+      "to": "a1_hall_center_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a1_a104",
+      "to": "a1_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "a1_panorama",
+      "to": "a1_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "a2_reception",
+      "to": "a2_hall_left",
+      "distance_m": 12
+    },
+    {
+      "from": "a2_waiting",
+      "to": "a2_hall_center_left",
+      "distance_m": 9
+    },
+    {
+      "from": "a2_kids",
+      "to": "a2_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "a2_training",
+      "to": "a2_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "a2_nursing",
+      "to": "a2_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "a2_restroom",
+      "to": "a2_hall_right",
+      "distance_m": 11
+    },
+    {
+      "from": "a2_a201",
+      "to": "a2_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a2_a202",
+      "to": "a2_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a2_a203",
+      "to": "a2_hall_center_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a2_a204",
+      "to": "a2_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "a2_a205",
+      "to": "a2_hall_right",
+      "distance_m": 8
+    },
+    {
+      "from": "a3_reception",
+      "to": "a3_hall_left",
+      "distance_m": 12
+    },
+    {
+      "from": "a3_waiting",
+      "to": "a3_hall_center_left",
+      "distance_m": 9
+    },
+    {
+      "from": "a3_classroom",
+      "to": "a3_hall_center_right",
+      "distance_m": 9
+    },
+    {
+      "from": "a3_staff",
+      "to": "a3_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "a3_restroom",
+      "to": "a3_hall_right",
+      "distance_m": 11
+    },
+    {
+      "from": "a3_a301",
+      "to": "a3_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a3_a302",
+      "to": "a3_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a3_a303",
+      "to": "a3_hall_center_left",
+      "distance_m": 8
+    },
+    {
+      "from": "a3_a304",
+      "to": "a3_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "a3_a305",
+      "to": "a3_hall_right",
+      "distance_m": 8
+    },
+    {
+      "from": "b1_entrance",
+      "to": "b1_entry_left",
+      "distance_m": 5
+    },
+    {
+      "from": "b1_entrance",
+      "to": "b1_entry_right",
+      "distance_m": 5
+    },
+    {
+      "from": "b1_entry_left",
+      "to": "b1_hall_center_left",
+      "distance_m": 12
+    },
+    {
+      "from": "b1_entry_right",
+      "to": "b1_hall_center_right",
+      "distance_m": 12
+    },
+    {
+      "from": "b1_reception",
+      "to": "b1_hall_left",
+      "distance_m": 11
+    },
+    {
+      "from": "b1_waiting",
+      "to": "b1_hall_center_left",
+      "distance_m": 9
+    },
+    {
+      "from": "b1_sterilization",
+      "to": "b1_hall_center_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b1_pharmacy",
+      "to": "b1_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b1_restroom",
+      "to": "b1_hall_right",
+      "distance_m": 11
+    },
+    {
+      "from": "b1_b101",
+      "to": "b1_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b1_b102",
+      "to": "b1_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b1_b103",
+      "to": "b1_hall_center_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b1_ct",
+      "to": "b1_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "b1_panorama",
+      "to": "b1_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b2_reception",
+      "to": "b2_hall_left",
+      "distance_m": 11
+    },
+    {
+      "from": "b2_waiting",
+      "to": "b2_hall_center_left",
+      "distance_m": 9
+    },
+    {
+      "from": "b2_tmj",
+      "to": "b2_hall_center_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b2_treatment",
+      "to": "b2_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b2_restroom",
+      "to": "b2_hall_right",
+      "distance_m": 11
+    },
+    {
+      "from": "b2_b201",
+      "to": "b2_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b2_b202",
+      "to": "b2_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b2_b203",
+      "to": "b2_hall_center_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b2_or1",
+      "to": "b2_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "b2_or2",
+      "to": "b2_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "b2_recovery",
+      "to": "b2_hall_right",
+      "distance_m": 8
+    },
+    {
+      "from": "b3_reception",
+      "to": "b3_hall_left",
+      "distance_m": 11
+    },
+    {
+      "from": "b3_lab",
+      "to": "b3_hall_center_left",
+      "distance_m": 9
+    },
+    {
+      "from": "b3_hall",
+      "to": "b3_hall_center_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b3_records",
+      "to": "b3_hall_right",
+      "distance_m": 9
+    },
+    {
+      "from": "b3_restroom",
+      "to": "b3_hall_right",
+      "distance_m": 11
+    },
+    {
+      "from": "b3_b301",
+      "to": "b3_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b3_b302",
+      "to": "b3_hall_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b3_conference",
+      "to": "b3_hall_center_left",
+      "distance_m": 8
+    },
+    {
+      "from": "b3_training1",
+      "to": "b3_hall_center_right",
+      "distance_m": 8
+    },
+    {
+      "from": "b3_training2",
+      "to": "b3_hall_right",
+      "distance_m": 8
+    },
+    {
+      "from": "a1_elevator",
+      "to": "a2_elevator",
+      "distance_m": 8,
+      "instruction": "A棟エレベーターで1階・2階間を移動"
+    },
+    {
+      "from": "a2_elevator",
+      "to": "a3_elevator",
+      "distance_m": 8,
+      "instruction": "A棟エレベーターで2階・3階間を移動"
+    },
+    {
+      "from": "b1_elevator",
+      "to": "b2_elevator",
+      "distance_m": 8,
+      "instruction": "B棟エレベーターで1階・2階間を移動"
+    },
+    {
+      "from": "b2_elevator",
+      "to": "b3_elevator",
+      "distance_m": 8,
+      "instruction": "B棟エレベーターで2階・3階間を移動"
+    },
+    {
+      "from": "a1_connector",
+      "to": "b1_connector",
+      "distance_m": 6,
+      "instruction": "A棟とB棟の1階連絡通路を移動"
+    },
+    {
+      "from": "a2_connector",
+      "to": "b2_connector",
+      "distance_m": 6,
+      "instruction": "A棟とB棟の2階連絡通路を移動"
+    },
+    {
+      "from": "a3_connector",
+      "to": "b3_connector",
+      "distance_m": 6,
+      "instruction": "A棟とB棟の3階連絡通路を移動"
+    }
+  ]
+}
+

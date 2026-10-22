@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hospital indoor navigation graph",
+  "type": "object",
+  "required": ["nodes", "edges"],
+  "properties": {
+    "metadata": {"type": "object"},
+    "canvas": {
+      "type": "object",
+      "properties": {
+        "width": {"type": "integer", "minimum": 100},
+        "height": {"type": "integer", "minimum": 100},
+        "north": {"const": "up"}
+      }
+    },
+    "maps": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "building", "floor", "x", "y"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "aliases": {"type": "array", "items": {"type": "string"}},
+          "building": {"type": "string", "minLength": 1},
+          "floor": {"type": "string", "minLength": 1},
+          "x": {"type": "number"},
+          "y": {"type": "number"},
+          "description": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "distance_m"],
+        "properties": {
+          "from": {"type": "string"},
+          "to": {"type": "string"},
+          "distance_m": {"type": "number", "exclusiveMinimum": 0},
+          "instruction": {"type": "string"},
+          "bidirectional": {"type": "boolean", "default": true}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
